@@ -227,6 +227,7 @@ for tile_num, tile_hashes in tile_border_hashes.items():
 # There luckily are exactly four of them for train and actual input
 print(math.prod(tiles_with_two_non_matching_sides))
 
+# part 2
 sq_size = int(math.sqrt(len(tiles)))
 start_tile = tiles_with_two_non_matching_sides[0]
 start_tile = tiles[start_tile]
@@ -304,5 +305,63 @@ for i in range(big_sq_size):
 
             big_sq[(tile_size - 2)*line + (tile_line - 1)][(tile_size - 2)*j + a] = 1
     str = "".join(['#' if b == 1 else ' ' for b in bit_line])
-    print(str)
+    #print(str)
 pass
+
+sea_monster_str = """
+                  # 
+#    ##    ##    ###
+ #  #  #  #  #  #   """.strip('\n')
+monster_relative_coordinates = []
+for row, line in enumerate(sea_monster_str.splitlines()):
+    for col, c in enumerate(list(line)):
+        if c == '#':
+            monster_relative_coordinates.append((col, row))
+
+monster_width = max([x for x, _ in monster_relative_coordinates]) + 1
+monster_height = max([y for _, y in monster_relative_coordinates]) + 1
+
+
+def monster_count():
+    match_cnt = 0
+    for x in range(reduced_size-monster_width):
+        for y in range(reduced_size-monster_height):
+            all_match = True
+            for mrx, mry in monster_relative_coordinates:
+                mx = x + mrx
+                my = y + mry
+                if big_sq[mx, my] == 0:
+                    all_match = False
+                    break
+            if all_match:
+                match_cnt += 1
+    return match_cnt
+
+
+# This seems to flip the pic right.
+big_sq = numpy.flipud(big_sq)
+big_sq = numpy.rot90(big_sq)
+big_sq = numpy.rot90(big_sq)
+big_sq = numpy.rot90(big_sq)
+mc = monster_count()
+tot_cnt = numpy.sum(big_sq)
+print(tot_cnt - mc*len(monster_relative_coordinates))
+
+
+#
+# print(monster_count())
+# big_sq = numpy.rot90(big_sq)
+# print(monster_count())
+# big_sq = numpy.rot90(big_sq)
+# print(monster_count())
+# big_sq = numpy.rot90(big_sq)
+# print(monster_count())
+# big_sq = numpy.flipud(big_sq)
+# print(monster_count())
+# big_sq = numpy.rot90(big_sq)
+# print(monster_count())
+# big_sq = numpy.rot90(big_sq)
+# print(monster_count())
+# big_sq = numpy.rot90(big_sq)
+# print(monster_count())
+
